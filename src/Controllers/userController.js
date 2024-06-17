@@ -75,44 +75,27 @@ exports.loginContoller = async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: "Utilisateur non trouvé " });
         }
-
+        const userRole = user.roles[0].name
         const match = await bcrypt.compare(password, user.password);
-      const isAdmin = user.roles.some(role => role.name === 'manager')
-      const isMembre = user.roles.some(role => role.name === 'membre')
-      /*   console.log(user) */
-        console.log(isAdmin)
-        return res.json(user)
-        /* if(isAdmin){
-          const accessToken= generateAccesToken({password:password})
-          return res.cookie('accessToken', accessToken, { httpOnly: true,maxAge: 30000, }).json({isAdmin:true});
-
-        }else if(isAdmin &&  !match){
-          return res.status(401).json({ error: "Mot de passe incorrect" });
-        }else if(isAdmin &&  !match){
-          return res.status(401).json({ error: "Mot de passe incorrect" });
-        } */
-
-
-       
-      /*   if(user.email == process.env.ADMIN_EMAIL &&  match){
-         const accessToken= generateAccesToken({password:password})
-    
-      
      
-         return res.cookie('accessToken', accessToken, { httpOnly: true,maxAge: 30000, }).json({isAdmin:true});
-        } else if(user.email == process.env.ADMIN_EMAIL &&  !match){
+      if(!match){
+        return res.status(401).json({ error: "Mot de passe ou e-mail est incorrecte " });
+      }
+        console.log(user)
+    
+        if(userRole){
+          const accessToken= generateAccesToken({password:password})
+          return res.json({role:userRole,user:user});
+
+        }else if(userRole &&  !match){
+          return res.status(401).json({ error: "Mot de passe incorrect" });
+        }else if(userRole &&  !match){
           return res.status(401).json({ error: "Mot de passe incorrect" });
         }
 
 
-        else if (match) {
-          const accessToken= generateAccesToken({email: email,password:password})
-        
-            return res.status(200).cookie('accessToken', accessToken, { httpOnly: true,maxAge: 30000, }).json(user.typeUser);
-
-        } else {
-            return res.status(401).json({ error: "Mot de passe incorrect" });
-        } */
+       
+    
     } catch (error) {
       if (error.response && error.response.status === 401) {
         return res.status(401).json({ error: "Mot de passe incorrect" });

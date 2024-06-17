@@ -12,11 +12,14 @@ const checkPermission = (permissionName) => {
           model: 'Permission'
         }
       });
-      console.log(user)
+      if(!user){
+        return res.status('404').json({message:user})
+      }
+   /*    console.log(user) */
       const hasPermission = user.roles.some(role =>
         role.permissions.some(permission => permission.name === permissionName)
       );
-      console.log(hasPermission)
+     /*  console.log(hasPermission) */
 
       if (!hasPermission) {
         return res.status(403).json({ message: 'Access denied' });

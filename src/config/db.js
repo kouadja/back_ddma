@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Permission = require('../Models/permission');
 const Role = require('../Models/role');
 
+const Projet = require("../Models/project.js")
 
 const connectDB = async () => {
   try {
@@ -33,6 +34,92 @@ const connectDB = async () => {
     
 
     ]
+    
+    const projects = [
+      {
+        name: 'Project Alpha',
+        description: 'This is the first project.',
+        folderName: 'project_alpha',
+        campaigns: [
+          {
+            name: 'Campaign 1',
+            description: 'This is the first campaign.',
+            files: [
+              {
+                fileName: 'intro_video.mp4',
+                fileType: 'video',
+                url: 'http://example.com/videos/intro_video.mp4'
+              },
+              {
+                fileName: 'details.pdf',
+                fileType: 'pdf',
+                url: 'http://example.com/files/details.pdf'
+              }
+            ]
+          },
+          {
+            name: 'Campaign 2',
+            description: 'This is the second campaign.',
+            files: [
+              {
+                fileName: 'overview_video.mp4',
+                fileType: 'video',
+                url: 'http://example.com/videos/overview_video.mp4'
+              }
+            ]
+          }
+        ],
+        members: ["66650b992b119409f8924a41"] // Admin and member
+      },
+      {
+        name: 'Project Beta',
+        description: 'This is the second project.',
+        folderName: 'project_beta',
+        campaigns: [
+          {
+            name: 'Campaign 1',
+            description: 'This is the first campaign of Project Beta.',
+            files: [
+              {
+                fileName: 'launch_video.mp4',
+                fileType: 'video',
+                url: 'http://example.com/videos/launch_video.mp4'
+              },
+              {
+                fileName: 'brochure.pdf',
+                fileType: 'pdf',
+                url: 'http://example.com/files/brochure.pdf'
+              }
+            ]
+          }
+        ],
+        members: ["66650b992b119409f8924a41"] // Member and client
+      }
+    ];
+
+    /*   await Projet.create(projects) */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 
    /*  const savedPermissions = await Permission.insertMany(permissions);
