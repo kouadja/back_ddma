@@ -1,7 +1,11 @@
 const bcrypt = require('bcryptjs');
 const User = require('../Models/user');
 const cookieParser = require('cookie-parser');
+const dotenv = require("dotenv")
 const jwt = require('jsonwebtoken');
+const { google } = require('googleapis');
+dotenv.config()
+
 
 
 const generateAccesToken =(jsonData,options ={})=>{
