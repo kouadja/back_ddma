@@ -1,13 +1,25 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const campaignSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String },
-  project: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+const CampaignSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  videos: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Video',
+  }],
+  users: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  }],
+  file: {
+    type: Schema.Types.ObjectId,
+    ref: 'File',
+    required: true,
+  },
 });
 
-const Campaign = mongoose.model('Campaign', campaignSchema);
-
+const Campaign = mongoose.model('Campaign', CampaignSchema);
 module.exports = Campaign;

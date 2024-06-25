@@ -1,6 +1,7 @@
 
 const fs = require("fs")
-const drive = require("../config/driveConfig.js")
+const drive = require("../config/driveConfig.js");
+/* const { drive } = require("googleapis/build/src/apis/drive/index.js"); */
 
  
   exports.list = async (req, res) => {
@@ -78,8 +79,29 @@ const drive = require("../config/driveConfig.js")
     }
   };
 
+  exports.getFile = (req, res) => {
+    const fileId = req.params.id;
+    console.log(fileId)
+
+   
+  
+    drive.files.get({ fileId: fileId, alt: 'media' }, { responseType: 'stream' },
+      (err, driveResponse) => {
+        if (err) {
+          res.status(500).send('Error retrieving the image');
+          return console.error('Error retrieving the image:', err);
+        }
+  
+        const contentType = driveResponse.headers['content-type'];
+        res.setHeader('Content-Type', contentType); // Définir le type MIME approprié        
+        driveResponse.data.pipe(res);
+      });
+  };
+
 
   
+  
+
 
 
 

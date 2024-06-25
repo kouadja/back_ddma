@@ -1,97 +1,85 @@
-const Project = require("../Models/project.js");
+const Campaign = require('../Models/campaign.js');
+const Video = require('../Models/video.js');
+const User = require('../Models/user.js');
+const File = require('../Models/file');
 
+// Créer une nouvelle campagne
 exports.createCampaign = async (req, res) => {
+  const { name, fileId } = req.body;
+
   try {
-    const { projectId, name, description, files } = req.body;
-    
-    const project = await Project.findById(projectId);
-    
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
-    }
-    
-    const newCampaign = { name, description, files };
-    project.campaigns.push(newCampaign);
-    
-    await project.save();
-    
-    res.status(201).json(project);
+    const newCampaign = new Campaign({ name, file: fileId });
+    await newCampaign.save();
+
+    const file = await File.findById(fileId);
+    file.campaigns.push(newCampaign._id);
+    await file.save();
+
+    res.status(201).json(newCampaign);
   } catch (error) {
     console.error('Error creating campaign:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+// Ajouter des vidéos à une campagne
+exports.addVideoToCampaign = async (req, res) => {
+  const { campaignId } = req.params;
+  const { name, url } = req.body;
+
+  try {
+    const video = new Video({ name, url, campaign: campaignId });
+    await video.save();
+
+    const campaign = await Campaign.findById(campaignId);
+    campaign.videos.push(video._id);
+    await campaign.save();
+
+    res.status(201).json(video);
+  } catch (error) {
+    console.error('Error adding video to campaign:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
-exports.getCampaigns = async (req, res) => {
+// Ajouter des membres à une campagne
+exports.addUserToCampaign = async (req, res) => {
+  const { campaignId } = req.params;
+  const { user } = req.body;
+
   try {
-    const { projectId } = req.params;
-    
-    const project = await Project.findById(projectId).populate('campaigns');
-    
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
-    }
-    
-    res.status(200).json(project.campaigns);
+    const campaign = await Campaign.findById(campaignId);
+    campaign.users.push(user);
+    await campaign.save();
+
+    res.status(200).json(campaign);
+  } catch (error) {
+    console.error('Error adding member to campaign:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Obtenir toutes les campagnes avec les vidéos et les membres
+exports.getAllCampaigns = async (req, res) => {
+  try {
+    const campaigns = await Campaign.find()
+      .populate('videos')
+      .populate('members');
+    res.status(200).json(campaigns);
   } catch (error) {
     console.error('Error fetching campaigns:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
-exports.updateCampaign = async (req, res) => {
-  try {
-    const { projectId, campaignId } = req.params;
-    const { name, description, files } = req.body;
-    
-    const project = await Project.findById(projectId);
-    
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
-    }
-    
-    const campaign = project.campaigns.id(campaignId);
-    
-    if (!campaign) {
-      return res.status(404).json({ message: 'Campaign not found' });
-    }
-    
-    campaign.name = name || campaign.name;
-    campaign.description = description || campaign.description;
-    campaign.files = files || campaign.files;
-    
-    await project.save();
-    
-    res.status(200).json(project);
-  } catch (error) {
-    console.error('Error updating campaign:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
+// Obtenir toutes les campagnes dans un fichier
+exports.getCampaignsInFile = async (req, res) => {
+  const { fileId } = req.params;
 
-exports.deleteCampaign = async (req, res) => {
   try {
-    const { projectId, campaignId } = req.params;
-    
-    const project = await Project.findById(projectId);
-    
-    if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
-    }
-    
-    const campaign = project.campaigns.id(campaignId);
-    
-    if (!campaign) {
-      return res.status(404).json({ message: 'Campaign not found' });
-    }
-    
-    campaign.remove();
-    
-    await project.save();
-    
-    res.status(200).json({ message: 'Campaign deleted successfully' });
+    const file = await File.findById(fileId).populate('campaigns');
+    res.status(200).json(file.campaigns);
   } catch (error) {
-    console.error('Error deleting campaign:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Error fetching campaigns:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
