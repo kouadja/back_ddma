@@ -3,14 +3,14 @@ const User = require("../Models/user.js");
 
 exports.createProject = async (req, res) => {
   try {
-    const { name, description, folderName, campaigns, members } = req.body;
+    const { name, description, folderName, campaigns, users } = req.body;
 
     const newProject = new Project({
       name,
       description,
       folderName,
       campaigns,
-      members
+      users
     });
 
     const savedProject = await newProject.save();

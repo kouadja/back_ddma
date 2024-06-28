@@ -6,12 +6,16 @@ const File = require('../Models/file');
 // Créer une nouvelle campagne
 exports.createCampaign = async (req, res) => {
   const { name, fileId } = req.body;
+  console.log(fileId)
 
   try {
     const newCampaign = new Campaign({ name, file: fileId });
     await newCampaign.save();
 
+
     const file = await File.findById(fileId);
+    console.log("file")
+    console.log(file)
     file.campaigns.push(newCampaign._id);
     await file.save();
 
@@ -24,10 +28,10 @@ exports.createCampaign = async (req, res) => {
 // Ajouter des vidéos à une campagne
 exports.addVideoToCampaign = async (req, res) => {
   const { campaignId } = req.params;
-  const { name, url } = req.body;
+  const { name, fileDriveId } = req.body;
 
   try {
-    const video = new Video({ name, url, campaign: campaignId });
+    const video = new Video({ name, fileDriveId, campaign: campaignId });
     await video.save();
 
     const campaign = await Campaign.findById(campaignId);
@@ -40,7 +44,47 @@ exports.addVideoToCampaign = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+/* exports.getVideosInCampaign = async (req, res) => {
+  const { campaignId } = req.params;
 
+  try {
+    const campaign = await Campaign.findById(campaignId).populate('videos',);
+    if (!campaign) {
+      return res.status(404).json({ message: 'Campaign not found' });
+    }
+
+    const videos = await Video.find({ campaign: campaignId });
+    res.status(200).json(videos);
+  } catch (error) {
+    console.error('Error fetching videos in campaign:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+} */
+  exports.getVideosInFile = async (req, res) => {
+    const { fileId } = req.params;
+  
+    try {
+      // Trouver le fichier et peupler les campagnes associées
+      const file = await File.findById(fileId).populate('campaigns');
+      if (!file) {
+        return res.status(404).json({ message: 'File not found' });
+      }
+  
+      // Récupérer toutes les vidéos associées à ces campagnes
+      const campaigns = file.campaigns;
+      let allVideos = [];
+  
+      for (let campaign of campaigns) {
+        const videos = await Video.find({ campaign: campaign._id });
+        allVideos = allVideos.concat(videos);
+      }
+  
+      res.status(200).json(allVideos);
+    } catch (error) {
+      console.error('Error fetching videos in file:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
+  };
 // Ajouter des membres à une campagne
 exports.addUserToCampaign = async (req, res) => {
   const { campaignId } = req.params;

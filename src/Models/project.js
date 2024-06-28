@@ -17,7 +17,7 @@ const projectSchema = new mongoose.Schema({
   description: { type: String },
   folderName: { type: String, required: true },
   campaigns: [campaignSchema],
-  members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

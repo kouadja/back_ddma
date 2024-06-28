@@ -6,7 +6,7 @@ const VideoSchema = new Schema({
     type: String,
     required: true,
   },
-  url: {
+  fileDriveId: {
     type: String,
     required: true,
   },

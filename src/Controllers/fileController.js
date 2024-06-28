@@ -2,12 +2,12 @@ const File = require('../Models/file.js');
 
 // Controller to create a new file
 exports.createFile = async (req, res) => {
-  const { name, content, folderId } = req.body;
+  const { name,  folderId } = req.body;
 
   try {
     const newFile = new File({
       name,
-      content,
+     
       folder: folderId,
     });
 
