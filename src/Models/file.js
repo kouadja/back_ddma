@@ -16,6 +16,11 @@ const FileSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Campaign',
   }],
+  users :[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'User',
+
+  }]
 });
 
 const File = mongoose.model('File', FileSchema);

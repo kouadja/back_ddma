@@ -8,6 +8,7 @@ exports.approveVideo = async (req, res) => {
   const { userId, status } = req.body;
 
   try {
+
     const approval = new Approval({ user: userId, video: videoId, status });
     await approval.save();
 

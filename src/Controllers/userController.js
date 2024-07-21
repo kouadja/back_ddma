@@ -74,22 +74,30 @@ exports.loginContoller = async (req, res) => {
   
     try {
         const { email, password } = req.body;
+        console.log(password)
 
         const user = await User.findOne({ email }).populate("roles");
-
+ 
         if (!user) {
-            return res.status(401).json({ error: "Utilisateur non trouvé " });
+          return res.status(401).json({ error: "Utilisateur non trouvé " });
         }
+
         const userRole = user.roles[0].name
+        console.log(userRole)
         const match = await bcrypt.compare(password, user.password);
-     
-      if(!match){
+        console.log(match)
+        if(!match){
+
+   
         return res.status(401).json({ error: "Mot de passe ou e-mail est incorrecte " });
       }
-        console.log(user)
+     
     
         if(userRole){
+        
           const accessToken= generateAccesToken({password:password})
+          
+
           return res.json({role:userRole,user:user});
 
         }else if(userRole &&  !match){
