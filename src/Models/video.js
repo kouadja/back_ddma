@@ -19,7 +19,7 @@ const VideoSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Approval',
   }],
-});
+}, { timestamps: true });
 
 const Video = mongoose.model('Video', VideoSchema);
 module.exports = Video;

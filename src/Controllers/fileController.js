@@ -1,3 +1,4 @@
+const Campaign = require('../Models/campaign.js');
 const File = require('../Models/file.js');
 const User = require('../Models/user.js');
 const bcrypt = require('bcryptjs');
@@ -24,7 +25,7 @@ exports.createFile = async (req, res) => {
 exports.getFile = async (req, res) => {
   try {
     const files = await File.find()
-    console.log(files)
+   
     res.status(200).json(files);
   } catch (error) {
     console.error('Error retrieving files:', error);
@@ -82,13 +83,16 @@ exports.getUsersInFile = async (req, res) => {
   const { fileId } = req.params;
 
   try {
-    const file = await File.findById(fileId).populate('users','email');
+    const file = await File.findById(fileId).populate('users');
+    const fileCampain = await Campaign.findById(fileId);
+
+   /*  return res.json(file.campaigns) */
 
     if (!file) {
       return res.status(404).json({ message: 'File not found' });
     }
 
-    res.status(200).json(file.users);
+    res.status(200).json({user:file.users,campaignId:file.campaigns});
   } catch (error) {
     console.error('Error retrieving users:', error);
     res.status(500).json({ message: 'Server error' });

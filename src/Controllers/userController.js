@@ -36,6 +36,7 @@ exports.loginContoller = async (req, res) => {
     try {
    
         const body = req.body;
+        console.log(body)
         const { email, password } = req.body;
         if (!email || !password) {
           
@@ -74,14 +75,14 @@ exports.loginContoller = async (req, res) => {
   
     try {
         const { email, password } = req.body;
+        console.log(email)
         console.log(password)
 
         const user = await User.findOne({ email }).populate("roles");
- 
+ console.log(user)
         if (!user) {
           return res.status(401).json({ error: "Utilisateur non trouvé " });
         }
-
         const userRole = user.roles[0].name
         console.log(userRole)
         const match = await bcrypt.compare(password, user.password);
@@ -115,3 +116,17 @@ exports.loginContoller = async (req, res) => {
       }
     }
 };
+exports.getUser = async (req, res) => {
+  try {
+    // Utilisez 'await' pour attendre que la requête soit complétée
+    const user = await User.find({});
+
+    // Retourner les utilisateurs trouvés en JSON
+    return res.json({ user: user });
+    
+  } catch (error) {
+    // En cas d'erreur, envoyer une réponse avec le message d'erreur
+    return res.status(500).json({ message: "Une erreur est survenue", error: error.message });
+  }
+};
+

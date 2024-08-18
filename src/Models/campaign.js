@@ -17,7 +17,7 @@ const CampaignSchema = new Schema({
   file: {
     type: Schema.Types.ObjectId,
     ref: 'File',
-    required: true,
+    required: false,
   },
 });
 

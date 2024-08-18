@@ -10,7 +10,7 @@ const FileSchema = new mongoose.Schema({
   folder: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Folder',
-    required: true,
+    required: false,
   },
   campaigns: [{
     type: mongoose.Schema.Types.ObjectId,
